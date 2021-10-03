@@ -113,6 +113,11 @@
                         <button class="oe_stat_button" type="object" name="action_view_leads" icon="fa-star">
 	                        <field string="Leads" name="lead_count" widget="statinfo"/>
 	                    </button>
+	                    <button name="action_view_journal_entry" type="object" class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('journal_entries_count', '=', 0)]}">
+                            <field name="journal_entries_count" widget="statinfo" string="Journal Entries"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                     	<h1>

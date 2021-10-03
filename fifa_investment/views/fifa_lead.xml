@@ -6,7 +6,7 @@
 	    <field name="arch" type="xml">
 			<tree string="FIFA's" editable="bottom">
 				<field name="year"/>
-				<field name="type"/>
+				<field name="fifa_type"/>
 				<field name="value"/>
 			</tree>
 	    </field>
@@ -19,9 +19,10 @@
 			<form>
 				<sheet>
 					<group>
-						<field name="type"/>
+						<field name="fifa_type"/>
 						<field name="year"/>
 						<field name="lead_id"/>
+						<field name="value"/>
 					</group>
 				</sheet>
 			</form>
@@ -42,6 +43,27 @@
 		<field name="model">crm.lead</field>
 		<field name="inherit_id" ref="crm.crm_lead_view_form"/>
 		<field name="arch" type="xml">
+			<xpath expr="//header//button[1]" position="before">
+				<!-- groups="credit_management_dds.group_credit_manager" -->
+        		<button name='action_purchase_fifa' id="action_purchase_fifa" string="Purchase FIFA" class="oe_highlight" type="object" />
+        	</xpath>
+		
+			<xpath expr="//page[@name='lead']" position="inside">
+				<group colspan="2" col="2">
+                    <separator string="Geolocation" colspan="2"/>
+                    <button string="Geolocalize" name="geo_localize" type="object" icon="fa-map-marker" class="btn-primary" colspan="2"/>
+                    <div>
+                        <span class="oe_inline"> ( </span>
+                        <span> Lat : </span>
+                        <field name="customer_latitude" class="oe_inline" no_label="1"/>
+                        <span> : Long : </span>
+                        <field name="customer_longitude" class="oe_inline" nolabel="1"/>
+                        <span>) </span>
+                    </div>
+                </group>
+			</xpath>
+				
+			
 			<xpath expr="//field[@name='name'][1]" position="attributes">
 				<attribute name="attrs">{'readonly': [('name', '!=', False)]}</attribute>
 			</xpath>
@@ -54,23 +76,27 @@
 				<group string="Property Informtion" name="info_property">
 					<group >
 						<field name="acres" />
+						<field name="land_value" />
+						<field name="building_value" />
 				 		<field name="property_value" />
+				 		<field name="gmaps_url" widget="url"/>
 				 		<field name="fmls_gmls" widget="url"/>
-				 		<field name="propert_value_exceeds_threshold" />
-				 		<field name="flag_fifa_value_owed" />
-				 		<field name="flag_building_structure" />
-				 		<field name="flag_land_locked" />
-				 		<field name="flag_lot_build_capable" />
+				 		<field name="zillow_url" widget="url"/>
+				 		<field name="propert_value_exceeds_threshold" widget="boolean_toggle"/>
+				 		<field name="flag_fifa_value_owed" widget="boolean_toggle"/>
+				 		<field name="flag_building_structure" widget="boolean_toggle"/>
 				 	</group>
 				 	<group>
-				 		<field name="lake_on_property" />
+				 		<field name="flag_land_locked" widget="boolean_toggle"/>
+				 		<field name="flag_lot_build_capable" widget="boolean_toggle"/>
+				 		<field name="lake_on_property" widget="boolean_toggle"/>
 				 		<field name="lake_id" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
 				 		<field name="lake_position" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
-				 		<field name="lake_creates_flood_plain" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
-				 		<field name="has_water_way" />
-				 		<field name="flag_water_on_land" />
+				 		<field name="lake_creates_flood_plain" string="Lake Creates Flood Plain" widget="boolean_toggle" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
+				 		<field name="has_water_way" widget="boolean_toggle"/>
+				 		<field name="flag_water_on_land" widget="boolean_toggle"/>
 				 		<field name="image_water_on_land" attrs="{'required': [('flag_water_on_land', '=', True)], 'invisible': [('flag_water_on_land', '=', False)]}"/>
-				 		<field name="flag_flood_plain" />
+				 		<field name="flag_flood_plain" widget="boolean_toggle"/>
 				 		<field name="percentage_flood_plain" attrs="{'required': [('flag_flood_plain', '=', True)], 'invisible': [('flag_flood_plain', '=', False)]}"/>
 				 	</group>
 				</group>
@@ -101,7 +127,7 @@
 				<page string="Partner Shares">
 					<field name="partner_share_ids" nolable="1" context="{'default_partner': partner_id, 'default_fifa_lead': active_id}"/>
 				</page>
-				<page string="Neigbouring Properties">
+				<page string="Neighbouring Properties">
 	 				<field name="neighbouring_properties_value" nolable="1" />
 	 			</page>
 	 			<page string="Comparable Properties">

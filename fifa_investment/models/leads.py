@@ -68,6 +68,18 @@ class CheckList(models.Model):
     
 class Lead(models.Model):
     _inherit = 'crm.lead'
+    
+    def action_purchase_fifa(self):
+        self.ensure_one()
+        return {
+                'name': 'Purcahse FIFA',
+                'type': 'ir.actions.act_window',
+                'res_model': 'res.fifa.purchase.fund',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'target': 'new',
+                'context': {'default_lead_id': self.id}
+            }
 
     @api.constrains('name')
     def _unique_name_constraint(self):
@@ -108,26 +120,30 @@ class Lead(models.Model):
     comparables = fields.One2many(comodel_name='res.fifa.comparable.property', inverse_name='fifa_lead', string='Comparables')
     comparables_approximate_value = fields.Monetary(string='Approximate Auction Value', currency_field='currency_id', compute='_comparables_value')
     onsite_checklist = fields.Many2one(comodel_name='site.checklist', string='Onsite Checklist')
+    land_value = fields.Monetary(string='Land Value', currency_field='currency_id')
+    building_value = fields.Monetary(string='Building Value', currency_field='currency_id')
+    gmaps_url = fields.Char(string='Google Maps Link')
+    zillow_url = fields.Char(string='Zillow Search')
     #img_gmaps_st_view_128 = fields.Image("Image 128", compute='_compute_gmaps_stree_view_image_128')
     
-    @api.onchange('street', 'zip', 'city', 'state_id', 'country_id')
-    def onchange_partner_id_geo(self):
-        address = {}
-        if self.street:
-            address['street'] = self.street
-        if self.zip:
-            address['zip'] = self.zip
-        if self.city:
-            address['city'] = self.city
-        if self.state_id:
-            address['state'] = self.state_id.name
-        if self.country_id:
-            address['country'] = self.country_id.name
-        if address:
-            result = self._geo_localize(**address)
-            if result:
-                self.customer_latitude = result[0]
-                self.customer_longitude = result[1]
+#     @api.onchange('street', 'zip', 'city', 'state_id', 'country_id')
+#     def onchange_partner_id_geo(self):
+#         address = {}
+#         if self.street:
+#             address['street'] = self.street
+#         if self.zip:
+#             address['zip'] = self.zip
+#         if self.city:
+#             address['city'] = self.city
+#         if self.state_id:
+#             address['state'] = self.state_id.name
+#         if self.country_id:
+#             address['country'] = self.country_id.name
+#         if address:
+#             result = self._geo_localize(**address)
+#             if result:
+#                 self.customer_latitude = result[0]
+#                 self.customer_longitude = result[1]
     
     def _comparables_value(self):
         for rec in self:

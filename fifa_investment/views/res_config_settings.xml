@@ -7,30 +7,85 @@
         <field name="arch" type="xml">
             <xpath expr="//div[@name='integration']" position="after">
                 <div name="fifa_accounts">
-                    <h2>FIFA Investment Accounts</h2>
-                    <div class="row mt16 o_settings_container">
+                    <h2>FIFA Investment Settings</h2>
+                    <div class="row mt16 o_settings_container"  title="FIFA Investment Funds">
                         <div class="col-xs-12 col-md-6 o_setting_box">
+                        	<div class="o_setting_left_pane"/>
+                        	<h3>Funds</h3>
                             <div class="o_setting_right_pane">
-                                <div class="content-group">
-                                    <div class="mt16">
-                                        <label for="res_fifa_default_investment_debit_account"/>
-                                        <field name="res_fifa_default_investment_debit_account" />
-                                    </div>
+                            	<span class="o_form_label">Investment Fund Journal</span>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                                <div class="mt16">
+                                    <field name="res_fifa_default_investment_journal" domain="[('company_id', '=', company_id)]"/>
                                 </div>
-                                <div class="content-group">
-                                    <div class="mt16">
-                                        <label for="res_fifa_default_investment_credit_account"/>
-                                        <field name="res_fifa_default_investment_credit_account" />
-                                    </div>
+                                <div class="text-muted">
+                                    Journal to record transactions of investment in the fund.
                                 </div>
                             </div>
-                            <!-- 
+                            <br/>
                             <div class="o_setting_right_pane">
-                                
+                                <span class="o_form_label">Investment Debit Account</span>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                                <div class="mt16">
+                                    <field name="res_fifa_default_investment_debit_account" domain="[('company_id', '=', company_id)]"/>
+                                </div>
+                                <div class="text-muted">
+                                    Account to be debited with the amount invested in the fund.
+                                </div>
                             </div>
-                             -->
+                            <br/>
+                            <div class="o_setting_right_pane">
+	                            <span class="o_form_label">Investment Credit Account</span>
+		                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+		                        <div class="mt16">
+		                            <field name="res_fifa_default_investment_credit_account" domain="[('company_id', '=', company_id)]"/>
+		                        </div>
+		                        <div class="text-muted">
+		                            Account to be credit with the amount invested by partners.
+		                        </div>
+		                    </div>
                         </div>
+                    	
+                    	<!-- Purchase Accounts -->    
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                        	<div class="o_setting_left_pane"/>
+                        	<h3>Purchase FIFA</h3>
+                            <div class="o_setting_right_pane">
+                            	<span class="o_form_label">Journal</span>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                                <div class="mt16">
+                                    <field name="res_fifa_default_purchase_journal" domain="[('company_id', '=', company_id)]"/>
+                                </div>
+                                <div class="text-muted">
+                                    Journal to record purchase of FIFA.
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="o_setting_right_pane">
+                                <span class="o_form_label">Debit Account</span>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                                <div class="mt16">
+                                    <field name="res_fifa_default_purchase_debit_account" domain="[('company_id', '=', company_id)]"/>
+                                </div>
+                                <div class="text-muted">
+                                    Account to be debited with the purchase of FIFA.
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="o_setting_right_pane">
+	                            <span class="o_form_label">Credit Account</span>
+		                        <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+		                        <div class="mt16">
+		                            <field name="res_fifa_default_purchase_credit_account" domain="[('company_id', '=', company_id)]"/>
+		                        </div>
+		                        <div class="text-muted">
+		                            Account to be credit with the purchase of FIFA.
+		                        </div>
+		                    </div>
+                        </div>
+                        
                     </div>
+                    
                 </div>
             </xpath>
         </field>
