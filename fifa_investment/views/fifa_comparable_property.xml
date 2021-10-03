@@ -1,0 +1,131 @@
+<odoo>
+  <data>
+	<record model="ir.ui.view" id="comparable_properties_tree">
+	    <field name="name">res.fifa.comparable.property.tree</field>
+	    <field name="model">res.fifa.comparable.property</field>
+	    <field name="arch" type="xml">
+			<tree string = "Comparable Properties" decoration-success="state=='active'" decoration-danger="state=='closed'">
+				<field name="address"/>
+				<field name="value" />
+				<field name="link"/>
+				<field name="state"/> 
+				<!-- #active = → makes line green  #Closed →  makes line red -->
+				<field name="attached_status"/>
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="comparable_properties_form">
+	    <field name="name">res.fifa.comparable.property.form</field>
+	    <field name="model">res.fifa.comparable.property</field>
+	    <field name="arch" type="xml">
+			<form>
+				<header>
+				    <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+				</header>
+				<!-- 
+				<div class="text-center alert alert-primary oe_edit_only" role="alert" attrs="{'invisible': ['|', ('ribbon_message', '=', False), ('ribbon_message', '=', '')]}">
+				    <field name="ribbon_message"/>
+				</div>
+				 -->
+				<sheet>
+					<group>
+						<field name="fifa_lead"/>
+						<field name="address"/>
+						<field name="value" />
+						<field name="link"/>
+						<!-- #active = → makes line green  #Closed →  makes line red -->
+						<field name="attached_status"/>
+					</group>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+    
+    <!-- explicit list view definition -->
+    <!-- 
+	<record model="ir.ui.view" id="view_tree">
+	    <field name="name">res.model.tree</field>
+	    <field name="model">res.model</field>
+	    <field name="arch" type="xml">
+			<tree string = "Comparable Properties" decoration-success="state=='active'" decoration-danger="state=='closed'">
+				<field name="address"/>
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_form">
+	    <field name="name">res.model</field>
+	    <field name="model">res.model</field>
+	    <field name="arch" type="xml">
+			<form>
+				<header>
+				    <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+				</header>
+				<sheet>
+					<group>
+						<field name="fifa_lead"/>
+					</group>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+    
+     -->
+<!--
+    <record model="ir.ui.view" id="partner_investment.list">
+      <field name="name">partner_investment list</field>
+      <field name="model">partner_investment.partner_investment</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="partner_investment.action_window">
+      <field name="name">partner_investment window</field>
+      <field name="res_model">partner_investment.partner_investment</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="partner_investment.action_server">
+      <field name="name">partner_investment server</field>
+      <field name="model_id" ref="model_partner_investment_partner_investment"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="partner_investment" id="partner_investment.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="partner_investment.menu_1" parent="partner_investment.menu_root"/>
+    <menuitem name="Menu 2" id="partner_investment.menu_2" parent="partner_investment.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="partner_investment.menu_1_list" parent="partner_investment.menu_1"
+              action="partner_investment.action_window"/>
+    <menuitem name="Server to list" id="partner_investment" parent="partner_investment.menu_2"
+              action="partner_investment.action_server"/>
+-->
+  </data>
+</odoo>

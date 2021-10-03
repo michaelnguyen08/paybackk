@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="group_fifa_user" model="res.groups">
+        <field name="name">View FIFA's</field>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]" />
+    </record>
+    <record id="group_fifa_manager" model="res.groups">
+        <field name="name">Manage FIFA's</field>
+        <field name="users" eval="[(4, ref('base.user_root')),(4, ref('base.user_admin'))]" />
+        <field name="implied_ids" eval="[(4, ref('group_fifa_user'))]"/>
+    </record>
+</odoo>

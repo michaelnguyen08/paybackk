@@ -1,0 +1,204 @@
+<odoo>
+  <data>
+  	<record model="ir.ui.view" id="res_fifa_view_tree">
+	    <field name="name">res.fifa.tree</field>
+	    <field name="model">res.fifa</field>
+	    <field name="arch" type="xml">
+			<tree string="FIFA's" editable="bottom">
+				<field name="year"/>
+				<field name="type"/>
+				<field name="value"/>
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="res_fifa_view_form">
+	    <field name="name">res.fifa.form</field>
+	    <field name="model">res.fifa</field>
+	    <field name="arch" type="xml">
+			<form>
+				<sheet>
+					<group>
+						<field name="type"/>
+						<field name="year"/>
+						<field name="lead_id"/>
+					</group>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+  	<record model="ir.ui.view" id="fifa_lead_form_view_map">
+		<field name="name">FIFA Map</field>
+		<field name="model">crm.lead</field>
+		<field name="inherit_id" ref="crm_maps.view_crm_leads_form_google_maps_inherit"/>
+		<field name="arch" type="xml">
+			<xpath expr="//page[@name='geolocalize']" position="attributes">
+				<attribute name="invisible">1</attribute>
+			</xpath>
+		</field>
+	</record>
+	<record model="ir.ui.view" id="fifa_lead_form_view">
+		<field name="name">FIFA Lead View</field>
+		<field name="model">crm.lead</field>
+		<field name="inherit_id" ref="crm.crm_lead_view_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='name'][1]" position="attributes">
+				<attribute name="attrs">{'readonly': [('name', '!=', False)]}</attribute>
+			</xpath>
+			 
+			<xpath expr="//field[@name='company_id']" position="after">
+				<field name="fund_id" />
+				<field name="onsite_checklist" />
+			</xpath>
+			<xpath expr="//group[1]" position="after">
+				<group string="Property Informtion" name="info_property">
+					<group >
+						<field name="acres" />
+				 		<field name="property_value" />
+				 		<field name="fmls_gmls" widget="url"/>
+				 		<field name="propert_value_exceeds_threshold" />
+				 		<field name="flag_fifa_value_owed" />
+				 		<field name="flag_building_structure" />
+				 		<field name="flag_land_locked" />
+				 		<field name="flag_lot_build_capable" />
+				 	</group>
+				 	<group>
+				 		<field name="lake_on_property" />
+				 		<field name="lake_id" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
+				 		<field name="lake_position" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
+				 		<field name="lake_creates_flood_plain" attrs="{'invisible': [('lake_on_property', '=', False)], 'required': [('lake_on_property', '=', True)]}"/>
+				 		<field name="has_water_way" />
+				 		<field name="flag_water_on_land" />
+				 		<field name="image_water_on_land" attrs="{'required': [('flag_water_on_land', '=', True)], 'invisible': [('flag_water_on_land', '=', False)]}"/>
+				 		<field name="flag_flood_plain" />
+				 		<field name="percentage_flood_plain" attrs="{'required': [('flag_flood_plain', '=', True)], 'invisible': [('flag_flood_plain', '=', False)]}"/>
+				 	</group>
+				</group>
+			 </xpath>
+			<xpath expr="//notebook" position="inside">
+				<page string="Gmaps Street Image">
+					<field name="img_gmaps_street_view" nolable="1" widget="image" options="{'zoom': true, 'zoom_delay': 1000, 'preventClicks': false}"/>
+				</page>
+				<page string="FIFA's">
+					<field name="fifa_ids" nolable="1" context="{'default_lead_id': active_id}"/>
+					<!-- 
+					<field name="total_value" />
+					 -->
+					<group name="note_group" col="6" class="mt-2 mt-md-0">
+					    <group class="oe_subtotal_footer oe_right" colspan="2" name="fifa_total">
+					    	<!-- 
+					        <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					        <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					         -->
+					        <div class="oe_inline o_td_label">
+					            <label for="total_value"/>
+					        </div>
+					        <field name="total_value" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+					    </group>
+					    <div class="oe_clear"/>
+					</group>
+				</page>
+				<page string="Partner Shares">
+					<field name="partner_share_ids" nolable="1" context="{'default_partner': partner_id, 'default_fifa_lead': active_id}"/>
+				</page>
+				<page string="Neigbouring Properties">
+	 				<field name="neighbouring_properties_value" nolable="1" />
+	 			</page>
+	 			<page string="Comparable Properties">
+		 			<div class="alert alert-info" role="alert" style="margin-bottom:5px;">
+		 				<field name="comparables_instruction" readonly="1" nolabel="1"/>
+				    </div>
+	 				<field name="comparables" nolable="1" />
+	 				<field name="comparables_approximate_value" />
+	 			</page>
+			</xpath>
+		</field>
+	</record>
+	
+    <!-- explicit list view definition -->
+    <!-- 
+	<record model="ir.ui.view" id="view_tree">
+	    <field name="name">res.model.tree</field>
+	    <field name="model">res.model</field>
+	    <field name="arch" type="xml">
+			<tree string = "Comparable Properties" decoration-success="state=='active'" decoration-danger="state=='closed'">
+				<field name="address"/>
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="view_form">
+	    <field name="name">res.model</field>
+	    <field name="model">res.model</field>
+	    <field name="arch" type="xml">
+			<form>
+				<header>
+				    <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+				</header>
+				<sheet>
+					<group>
+						<field name="fifa_lead"/>
+					</group>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+    
+     -->
+<!--
+    <record model="ir.ui.view" id="partner_investment.list">
+      <field name="name">partner_investment list</field>
+      <field name="model">partner_investment.partner_investment</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </tree>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="partner_investment.action_window">
+      <field name="name">partner_investment window</field>
+      <field name="res_model">partner_investment.partner_investment</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="partner_investment.action_server">
+      <field name="name">partner_investment server</field>
+      <field name="model_id" ref="model_partner_investment_partner_investment"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="partner_investment" id="partner_investment.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="partner_investment.menu_1" parent="partner_investment.menu_root"/>
+    <menuitem name="Menu 2" id="partner_investment.menu_2" parent="partner_investment.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="partner_investment.menu_1_list" parent="partner_investment.menu_1"
+              action="partner_investment.action_window"/>
+    <menuitem name="Server to list" id="partner_investment" parent="partner_investment.menu_2"
+              action="partner_investment.action_server"/>
+-->
+  </data>
+</odoo>
