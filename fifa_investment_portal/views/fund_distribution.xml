@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+        <template id="portal_layout_funds_distribution" name="Portal layout: Funds Distribution menu entry" inherit_id="portal.portal_breadcrumbs" priority="10">
+            <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+                <li t-if="page_name == 'funds_dis' or funds_dis" class="col-lg-2" t-attf-class="breadcrumb-item #{'active ' if not funds_dis else ''}">
+                    <a t-if="funds_dis" t-attf-href="/my/funds_dis?{{ keep_query() }}">Funds Distribution</a>
+                    <t t-else="">
+                        Funds Distribution
+                    </t>
+                </li>
+                <li t-if="funds_dis" class="breadcrumb-item active">
+                    <t t-esc="funds_dis.investment_fund.name"/>
+                </li>
+            </xpath>
+        </template>
+        <template id="portal_my_home_funds_distribution" name="Show Funds Distribution" customize_show="True" inherit_id="portal.portal_my_home" priority="102">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Funds Distribution</t>
+                    <t t-set="url" t-value="'/my/funds_dis'"/>
+                    <t t-set="placeholder_count" t-value="'funds_dis_count'"/>
+                </t>
+            </xpath>
+        </template>
+        <template id="portal_my_funds_dis" name="Funds">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs_searchbar" t-value="True"/>
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Funds Distribution</t>
+                </t>
+                <t t-if="not funds">
+                    <p>There are currently no funds by you.</p>
+                </t>
+                <t t-else="" t-call="portal.portal_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Fund Name</th>
+                            <th>Number Of Shares</th>
+                            <th class="text-right">Invested Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="funds" t-as="fund">
+                            <tr t-if="fund.partner_fifa_investments">
+                                <td>
+                                    <a t-attf-href="/my/funds_dis/#{fund.id}" t-esc="fund.investment_fund.name"/>
+                                </td>
+                                <td>
+                                    <span t-esc="len(fund.partner_fifa_investments)"/>
+                                </td>
+                                <td class="text-right">
+                                    <span t-esc="fund.amount_invested"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </t>
+            </t>
+        </template>
+        <template id="portal_my_funds_form" name="Funds Distribution Form">
+            <t t-call="portal.portal_layout">
+                <div class="container fund-dis">
+                    <input t-att-value="funds_dis.id" type="hidden" id="fund_id"/>
+                    <input t-att-value="partner.id" type="hidden" id="user_id"/>
+                    <div style="max-width:600px; margin: auto;">
+                        <canvas id="myChart" width="400" height="400"></canvas>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>
