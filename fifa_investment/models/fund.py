@@ -12,12 +12,21 @@ class PartnerFIFAShare(models.Model):
     partner_investment_id = fields.Many2one(comodel_name='res.fifa.investment.fund.partner.investments', 
                                             string='Partner Invested Amount', domain="[('partner', '=', partner)]", index=True, required=True)
     partner = fields.Many2one(comodel_name='res.partner', string='Partner', related='partner_investment_id.partner', index=True, store=True)
+    fund_id = fields.Many2one(comodel_name='res.fifa.investment.fund', string='Fund', related='partner_investment_id.investment_fund')
     fifa_lead = fields.Many2one(comodel_name='crm.lead', string='FIFA', related='fifa_id.lead_id', store=True, index=True)
     fifa_id = fields.Many2one(comodel_name='res.fifa', string='FIFA', index=True, required=True)
+    fifa_purchase_date = fields.Date('Purchase Date', compute='_get_purchase_date')
     currency = fields.Many2one(comodel_name='res.currency', string='Currency', related='partner_investment_id.currency')
-    amount_owned = fields.Monetary(string='Invested Amount', currency_field='currency', compute='_percentage_owned')
+    amount_owned = fields.Monetary(string='Amount Owned', currency_field='currency', compute='_percentage_owned')
     percentage_owned = fields.Float(string='% Owned', digits='Product Price', compute='_percentage_owned')
     
+    def _get_purchase_date(self):
+        for rec in self:
+            fifa_purchase_date = None
+            purchase_rec_found = self.env['res.fifa.investment.fund.purchased'].search([('fund_id', '=', rec.fund_id.id), ('fifa_id', '=', rec.fifa_id.id)])
+            if purchase_rec_found:
+                fifa_purchase_date = purchase_rec_found.purchase_date
+            rec.fifa_purchase_date = fifa_purchase_date
 #     @api.onchange('partner')
 #     def _set_partner_filter(self):
 #         domain = {}
@@ -46,6 +55,7 @@ class PartnerInvestedAmount(models.Model):
     investment_count = fields.Integer(string='Investment Count', compute='_investment_count')
     total_amount = fields.Float(string='Total Amount', digits='Product Price', compute='_total_amount')
     currency = fields.Many2one(comodel_name='res.currency', string='Currency', related='investment_fund.currency_id')
+    investment_count_str = fields.Char(string='FIFA Investments Count Text', compute='_investment_count')
     
     def _get_partner_investment_share(self):
         for rec in self:
@@ -67,9 +77,14 @@ class PartnerInvestedAmount(models.Model):
     
     def _investment_count(self):
         for rec in self:
+            suffix = ""
             investment_count = 0
             if rec.partner_fifa_investments:
                 investment_count = len(rec.partner_fifa_investments)
+            if investment_count > 1:
+                suffix = "'s"
+            investment_count_str = " %s FIFA%s" %(investment_count, suffix)
+            rec.investment_count_str = investment_count_str
             rec.investment_count = investment_count 
     
     def _total_amount(self):
@@ -84,6 +99,9 @@ class PartnerInvestedAmount(models.Model):
         context = self._context.copy()
         context['default_partner_investment_id'] = self.id
         context['default_partner'] = self.partner.id
+        context['create'] = False
+        context['edit'] = False
+        context['delete'] = False
         return {
                 'name':_("Partner FIFA's Ownership"),
                 'view_mode': 'tree,form',
@@ -102,8 +120,9 @@ class InvestmentFundPurchasedFiFA(models.Model):
     _name = 'res.fifa.investment.fund.purchased'
     _description = 'FIFA purchased with investment fund'
     
-    fund_id = fields.Many2one(comodel_name='res.fifa.investment.fund', string='Fund', required=True)
-    fifa_id = fields.Many2one(comodel_name='res.fifa', required=True)
+    fund_id = fields.Many2one(comodel_name='res.fifa.investment.fund', string='Fund', required=True, ondelete='restrict')
+    fifa_id = fields.Many2one(comodel_name='res.fifa', required=True, ondelete='restrict')
+    purchase_date = fields.Date(string='Purchase Date', required=True)
     
     @api.constrains('fifa_id')
     def _fifa_purchase_constraint(self):
@@ -120,34 +139,48 @@ class InvestmentFundPurchasedFiFA(models.Model):
             for investment in fund.partner_investments:
                 self.env['res.fifa.investment.fund.partner.share'].create({'partner_investment_id': investment.id, 'fifa_id': fifa_id})
         return result
-
+    
 class InvestmentFunds(models.Model):
     _name = 'res.fifa.investment.fund'
     _description = 'Partner Investment Funds'
+    
+    def unlink(self):
+        if self.filtered(lambda x: x.state != 'draft'):
+            raise UserError('Deleting confirmed funds is not allowed.')
+        return super(InvestmentFunds, self).unlink()
     
     name = fields.Char(string='Fund Title/Name', required=True)
     partner_investments = fields.One2many(comodel_name='res.fifa.investment.fund.partner.investments', inverse_name='investment_fund', 
                                           string='Investment by Partners')
     state = fields.Selection(selection=[('draft', 'Draft'), ('confirmed', 'Confirmed/Active')], string='Status', default='draft')
     investment_count = fields.Integer(string='Investment Count', compute='_investment_count')
-    total_amount = fields.Float(string='Total Amount', digits='Product Price', compute='_total_amount')
+    total_amount = fields.Float(string='Total Fund', digits='Product Price', compute='_total_amount')
     lead_count = fields.Integer(string='Investment Count', compute='_lead_count')
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', default=lambda self: self.env.company.currency_id)
     journal_entries = fields.One2many(comodel_name='account.move', inverse_name='investment_fund_id', string='Journal Entries')
     journal_entries_count = fields.Integer(string='Journal Entries Count', compute='_get_journal_entries_count')
     purchased_fifa = fields.One2many(comodel_name='res.fifa.investment.fund.purchased', inverse_name='fund_id', string='Purchased FIFA')
     purchased_fifa_value = fields.Monetary(string='Purchased FIFA Value', currency_field='currency_id', compute='_get_fund_amounts')
+    purchased_fifa_count = fields.Integer(string='Purchased FIFA Count', compute='_get_fund_amounts')
+    purchased_fifa_count_str = fields.Char(string='Purchased FIFA Count Text', compute='_get_fund_amounts')
     remaining_amount = fields.Monetary(string='Remaining Amount', currency_field='currency_id', compute='_get_fund_amounts', store=True)
     
     @api.depends('purchased_fifa.fifa_id', 'total_amount')
     def _get_fund_amounts(self):
         for rec in self:
             purchased_fifa_value = 0.0
+            purchased_fifa_count = 0
             if rec.purchased_fifa:
                 purchased_fifa_value = sum(rec.mapped('purchased_fifa.fifa_id.value'))
+                purchased_fifa_count = len(rec.purchased_fifa)
             remaining_amount = rec.total_amount - purchased_fifa_value
             rec.purchased_fifa_value = purchased_fifa_value
             rec.remaining_amount = remaining_amount
+            rec.purchased_fifa_count = purchased_fifa_count
+            purchased_fifa_count_str = "%s FIFA" % purchased_fifa_count
+            if purchased_fifa_count > 1:
+                purchased_fifa_count_str += "'s"
+            rec.purchased_fifa_count_str = purchased_fifa_count_str
             
     
     def _get_journal_entries_count(self):
@@ -196,10 +229,33 @@ class InvestmentFunds(models.Model):
                 'domain': [('investment_fund', '=',self.id)],
                 'context': context
                 }
+        
+    def action_view_purchased_fifa(self):
+        self.ensure_one()
+        context = self._context.copy()
+        context['create'] = False
+        context['edit'] = False
+        context['delete'] = False
+        return {
+                'name':_("FIFA's Purchased"),
+                'view_mode': 'tree,form',
+                'view_id': False,
+                'view_type': 'form',
+                'res_model': 'res.fifa',
+                #'res_id': partial_id,
+                'type': 'ir.actions.act_window',
+                'nodestroy': True,
+                'target': 'current',
+                'domain': [('id', 'in', self.purchased_fifa.mapped('fifa_id').mapped('id'))],
+                'context': context
+                }
     
     def action_view_leads(self):
         self.ensure_one()
         context = self._context.copy()
+        context['create'] = False
+        context['edit'] = False
+        context['delete'] = False
         action = self.env['ir.actions.act_window']._for_xml_id('crm.crm_lead_opportunities')
 #         if self.is_company:
 #             action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id)]
@@ -235,10 +291,11 @@ class InvestmentFunds(models.Model):
             action['res_id'] = journal_entries.id
         else:
             action = {'type': 'ir.actions.act_window_close'}
-
-        context = {
-            'default_move_type': 'entry',
-        }
+        context = self._context.copy()
+        context['default_move_type'] = 'entry'
+        context['create'] = False
+        context['edit'] = False
+        context['delete'] = False
         if len(self) == 1:
             context.update({
                 'default_investment_fund_id': self.id,

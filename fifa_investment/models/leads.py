@@ -78,7 +78,7 @@ class Lead(models.Model):
                 'view_mode': 'form',
                 'view_type': 'form',
                 'target': 'new',
-                'context': {'default_lead_id': self.id}
+                'context': {'default_lead_id': self.id, 'default_fund_id': self.fund_id.id if self.fund_id else False}
             }
 
     @api.constrains('name')
@@ -124,6 +124,9 @@ class Lead(models.Model):
     building_value = fields.Monetary(string='Building Value', currency_field='currency_id')
     gmaps_url = fields.Char(string='Google Maps Link')
     zillow_url = fields.Char(string='Zillow Search')
+    #4557 De Silva St Fremont CA 94538
+    #https://www.zillow.com/homes/4557-De-Silva-St-Fremont-CA-94538_rb/
+    flag_readonly_name = fields.Boolean(string='Flag Readonly Name', default=False)
     #img_gmaps_st_view_128 = fields.Image("Image 128", compute='_compute_gmaps_stree_view_image_128')
     
 #     @api.onchange('street', 'zip', 'city', 'state_id', 'country_id')
@@ -144,6 +147,12 @@ class Lead(models.Model):
 #             if result:
 #                 self.customer_latitude = result[0]
 #                 self.customer_longitude = result[1]
+
+    @api.model
+    def create(self, values):
+        values['flag_readonly_name'] = True
+        result = super(Lead, self).create(values)
+        return result
     
     def _comparables_value(self):
         for rec in self:

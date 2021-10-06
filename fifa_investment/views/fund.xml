@@ -7,7 +7,8 @@
 	    <field name="arch" type="xml">
 			<tree string="Partner Shares">
 				<field name="partner"/>
-				<field name="fifa_lead"/>
+				<field name="fifa_id"/>
+				<field name="fifa_purchase_date" />
 				<field name="amount_owned"/>
 				<field name="percentage_owned"/>
 			</tree>
@@ -40,6 +41,7 @@
 			<tree string = "Partner Investments">
 				<field name="partner"/>
 				<field name="amount_invested"/>
+				<field name="fund_investment_share"/>
 				<field name="currency" invisible="1"/>
 			</tree>
 	    </field>
@@ -53,11 +55,10 @@
 				<sheet>
 					<field name="investment_count" invisible="1"/>
 					<div class="oe_button_box" name="button_box">
-                        <button name="action_partner_investments" type="object" class="oe_stat_button" icon="fa-dollar" context="{'default_investment_fund': active_id}">
+                        <button name="action_partner_investments" type="object" class="oe_stat_button" icon="fa-plus" context="{'default_investment_fund': active_id}">
                             <div class="o_stat_info">
                                 <field name="total_amount" class="o_stat_value"/>
-                                <span class="o_stat_text" attrs="{'invisible': [('investment_count', '&lt;', 2)]}"> Partner Investments</span>
-                                <span class="o_stat_text" attrs="{'invisible': [('investment_count', '&gt;', 1)]}"> Partner Investment</span>
+                                <field name="investment_count_str" class="o_stat_text"/>
                             </div>
                         </button>
                     </div>
@@ -69,10 +70,14 @@
                     		<label for="amount_invested" />
                     		<field name="amount_invested"/>
                     	</h2>
+                    	<h3>
+                    		<label for="fund_investment_share" />
+                    		<field name="fund_investment_share"/>
+                    		<span> %</span>
+                    	</h3>
                     </div>
 					<group>
 						<field name="investment_fund" invisible="1"/>
-						
 						<field name="currency" invisible="1"/>
 					</group>
 				</sheet>
@@ -86,6 +91,9 @@
 	    <field name="arch" type="xml">
 			<tree string="Funds">
 				<field name="name"/>
+				<field name="total_amount"/>
+				<field name="purchased_fifa_value" string="FIFA Purchased"/>
+				<field name="remaining_amount"/>
 				<field name="state"/>
 			</tree>
 	    </field>
@@ -102,12 +110,23 @@
 				</header>
 				<sheet>
 					<field name="investment_count" invisible="1"/>
+					<field name="purchased_fifa_count" invisible="1"/>
 					<div class="oe_button_box" name="button_box">
                         <button name="action_fund_investments" type="object" class="oe_stat_button" icon="fa-dollar" context="{'default_investment_fund': active_id}">
                             <div class="o_stat_info">
                                 <field name="total_amount" class="o_stat_value"/>
                                 <span class="o_stat_text" attrs="{'invisible': [('investment_count', '&lt;', 2)]}"> Partner Investments</span>
                                 <span class="o_stat_text" attrs="{'invisible': [('investment_count', '&gt;', 1)]}"> Partner Investment</span>
+                            </div>
+                        </button>
+                        <button name="action_view_purchased_fifa" type="object" class="oe_stat_button" icon="fa-plus">
+                            <div class="o_stat_info">
+                                <field name="purchased_fifa_value" class="o_stat_value"/>
+                                <field name="purchased_fifa_count_str" class="o_stat_text"/>
+                                <!--  
+                                <span class="o_stat_text" attrs="{'invisible': [('purchased_fifa_count', '&lt;', 2)]}"> FIFA's</span>
+                                <span class="o_stat_text" attrs="{'invisible': [('purchased_fifa_count', '&gt;', 1)]}"> FIFA</span>
+                                -->
                             </div>
                         </button>
                         <button class="oe_stat_button" type="object" name="action_view_leads" icon="fa-star">
@@ -124,10 +143,12 @@
                     		<field name="name" default_focus="1" placeholder="Fund Name / Title" required="1"/>	
                     	</h1>
                     </div>
-					<!-- 
-					<group>
-						
+                    <group>
+						<field name="total_amount"/>
+						<field name="purchased_fifa_value"/>
+						<field name="remaining_amount"/>
 					</group>
+					<!-- 
 					<notebook>
 						<page string="Partner Investments">
 							<field name="partner_investments" nolabel="1" context="{'default_investment_fund': active_id}"/>
@@ -146,50 +167,6 @@
     </record>
     
     <menuitem id="menu_fifa_investment_funds" name="Funds" parent="crm.crm_menu_config" sequence="100" action="action_fifa_investment_funds" groups="group_fifa_manager"/>
-	
-    <!-- explicit list view definition -->
-   
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="partner_investment.action_window">
-      <field name="name">partner_investment window</field>
-      <field name="res_model">partner_investment.partner_investment</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="partner_investment.action_server">
-      <field name="name">partner_investment server</field>
-      <field name="model_id" ref="model_partner_investment_partner_investment"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
-      </field>
-    </record>
--->
-
-    <!-- Top menu item -->
-<!--
-    <menuitem name="partner_investment" id="partner_investment.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="partner_investment.menu_1" parent="partner_investment.menu_root"/>
-    <menuitem name="Menu 2" id="partner_investment.menu_2" parent="partner_investment.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="partner_investment.menu_1_list" parent="partner_investment.menu_1"
-              action="partner_investment.action_window"/>
-    <menuitem name="Server to list" id="partner_investment" parent="partner_investment.menu_2"
-              action="partner_investment.action_server"/>
--->
   </data>
 </odoo>

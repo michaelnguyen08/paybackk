@@ -21,6 +21,7 @@ class FifaPurchase(models.TransientModel):
     fund_remaining_amount = fields.Monetary(string='Fund Remaining', currency_field='currency_id', related='fund_id.remaining_amount')
     fifa_ids = fields.Many2many(comodel_name='res.fifa', relation='rel_fund_purchase_fifa', column1='purchase_id', column2='fifa_id', string='FIFA to Purchase', ondelete="cascade")
     fifa_value = fields.Monetary(string='FIFA Value', currency_field='currency_id', compute='_get_fifa_value')
+    purchase_date = fields.Date(string='Purchase Date')
     
     @api.depends('fifa_ids', 'fifa_ids.value')
     def _get_fifa_value(self):
@@ -46,7 +47,7 @@ class FifaPurchase(models.TransientModel):
             raise UserError("Insufficient funds to purchase the selected FIFA's")
         purchased_fifa_vals = [] 
         for fifa in self.fifa_ids:
-            purchased_fifa_vals.append((0, 0, {'fifa_id': fifa.id}))
+            purchased_fifa_vals.append((0, 0, {'fifa_id': fifa.id, 'purchase_date': self.purchase_date}))
         if purchased_fifa_vals:
             self.fund_id.write({'purchased_fifa': purchased_fifa_vals})
         else:

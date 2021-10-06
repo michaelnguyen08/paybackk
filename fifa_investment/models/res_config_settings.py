@@ -5,7 +5,7 @@ from odoo.tools.safe_eval import safe_eval
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    property_value_threshold = fields.Float(string='Threshold for Property Value', default=135000, currency_field='currency_id',
+    property_value_threshold = fields.Float(string='Property Value Threshold', default=135000, currency_field='currency_id',
                                                config_parameter='highlight_property_threshold_value', readonly=False, 
                                                help='Highlight property whose value exceeds this threshold limit, default threshold value is 135000')
     res_fifa_default_investment_debit_account = fields.Many2one(

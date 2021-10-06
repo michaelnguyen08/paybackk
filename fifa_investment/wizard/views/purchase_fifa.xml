@@ -10,6 +10,7 @@
 			    	<group>
 			    		<field name="lead_id" readonly="1" invisible="1"/>
 			    		<field name="currency_id" readonly="1" invisible="1"/>
+			    		<field name="purchase_date" required="1"/>
 			    		<field name="fund_id" />
 			    		<field name="fund_remaining_amount"/>
 			    	</group>
