@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 from datetime import datetime
 import logging
+from odoo.exceptions import UserError
 _logger = logging.getLogger('FIFA')
 
 class FIFAType(models.Model):
@@ -34,6 +35,14 @@ class FIFA(models.Model):
         for rec in self:
             name = '%s [%s] %s' %(rec.year, rec.fifa_type.name, rec.lead_id.name)
             rec.name = name
+            
+    def write(self, values):
+        if 'value' in values or 'year' in values or 'fifa_type' in values:
+            locked_records = self.filtered(lambda fifa: fifa.status != 'available')
+            if locked_records:
+                raise UserError('Value of a purchased FIFA cannot be modified!')
+        result = super().write(values)
+        return result
     
     name = fields.Char(string='FIFA', compute='_get_fifa_name')
     lead_id = fields.Many2one(comodel_name='crm.lead', string='FIFA Lead', tracking=True)
@@ -43,6 +52,15 @@ class FIFA(models.Model):
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency', related='lead_id.currency_id')
     status = fields.Selection(selection=[('available', 'Available'), ('purchased', 'Purchased'), ('sold', 'Sold')], string='Status', 
                               compute='_get_fifa_status', search='_status_search')
+    purchase_date = fields.Date(string='Purchase Date', compute='_get_purchase_date')
+    
+    def _get_purchase_date(self):
+        for rec in self:
+            fifa_purchase_date = None
+            purchase_rec_found = self.env['res.fifa.investment.fund.purchased'].search([('fifa_id', '=', rec.id)], limit=1)
+            if purchase_rec_found:
+                fifa_purchase_date = purchase_rec_found.purchase_date
+            rec.purchase_date = fifa_purchase_date
     
     def _get_fifa_status(self):
         for rec in self:

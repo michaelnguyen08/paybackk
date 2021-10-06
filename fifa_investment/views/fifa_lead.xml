@@ -4,10 +4,12 @@
 	    <field name="name">res.fifa.tree</field>
 	    <field name="model">res.fifa</field>
 	    <field name="arch" type="xml">
-			<tree string="FIFA's" editable="bottom">
+			<tree string="FIFA's" editable="bottom" decoration-success="status=='purchased'" decoration-danger="status=='sold'">
 				<field name="year"/>
 				<field name="fifa_type"/>
 				<field name="value"/>
+				<field name="status"/>
+				<field name="purchase_date" readonly="1"/>
 			</tree>
 	    </field>
     </record>
@@ -65,10 +67,11 @@
 				
 			
 			<xpath expr="//field[@name='name'][1]" position="attributes">
-				<attribute name="attrs">{'readonly': [('name', '!=', False)]}</attribute>
+				<attribute name="attrs">{'readonly': [('flag_readonly_name', '=', True)]}</attribute>
 			</xpath>
 			 
 			<xpath expr="//field[@name='company_id']" position="after">
+				<field name="flag_readonly_name" invisible="1"/>
 				<field name="fund_id" />
 				<field name="onsite_checklist" />
 			</xpath>

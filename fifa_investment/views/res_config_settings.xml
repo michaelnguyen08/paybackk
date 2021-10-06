@@ -84,6 +84,22 @@
 		                    </div>
                         </div>
                         
+                        <!-- Property Value Threshold -->
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                        	<div class="o_setting_left_pane"/>
+                        	<h3>Other Configurations</h3>
+                            <div class="o_setting_right_pane">
+                            	<span class="o_form_label">Property Value Threshold</span>
+                                <span class="fa fa-lg fa-building-o" title="Values set here are company-specific." aria-label="Values set here are company-specific." groups="base.group_multi_company" role="img"/>
+                                <div class="mt16">
+                                    <field name="property_value_threshold"/>
+                                </div>
+                                <div class="text-muted">
+                                    Properties exceeding this value will have a flag set to identify them.
+                                </div>
+                            </div>
+                        </div>
+                        
                     </div>
                     
                 </div>
