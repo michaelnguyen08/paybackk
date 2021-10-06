@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="assets_frontend" inherit_id="web.assets_frontend">
+        <xpath expr="script[last()]" position="after">
+            <script type="text/javascript" src="/fifa_investment_portal/static/src/js/script.js"/>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        </xpath>
+    </template>
+</odoo>
