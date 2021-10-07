@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Investment Partner",
+    'name': "FIFA Partner Investments",
 
     'summary': """
         Contains features which enable us to keep track of investments made by a partner.
@@ -17,7 +17,7 @@
     # Check https://github.com/odoo/odoo/blob/14.0/odoo/addons/base/data/ir_module_category_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '14.0.1.0.3',
+    'version': '14.0.1.0.4',
 
     # any module necessary for this one to work correctly
     'depends': ['base', 'crm', 'crm_maps', 'account'],

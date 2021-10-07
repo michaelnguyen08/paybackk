@@ -3,6 +3,8 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 from odoo.tools.float_utils import float_compare 
+import logging
+_logger = logging.getLogger('FIFA-Lead')
 
 class Lake(models.Model):
     _name = 'res.lake'
@@ -69,6 +71,15 @@ class CheckList(models.Model):
 class Lead(models.Model):
     _inherit = 'crm.lead'
     
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(Lead, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if result.get('fields', False):
+            if result.get('fields').get('partner_id', False):
+                _logger.info(result['fields']['partner_id'])
+                result['fields']['partner_id']['string'] = "Owner"
+        return result
+    
     def action_purchase_fifa(self):
         self.ensure_one()
         return {
@@ -122,12 +133,58 @@ class Lead(models.Model):
     onsite_checklist = fields.Many2one(comodel_name='site.checklist', string='Onsite Checklist')
     land_value = fields.Monetary(string='Land Value', currency_field='currency_id')
     building_value = fields.Monetary(string='Building Value', currency_field='currency_id')
-    gmaps_url = fields.Char(string='Google Maps Link')
-    zillow_url = fields.Char(string='Zillow Search')
+    gmaps_url = fields.Char(string='Google Maps Link', compute='_get_url')
+    zillow_url = fields.Char(string='Zillow Search', compute='_get_url')
     #4557 De Silva St Fremont CA 94538
     #https://www.zillow.com/homes/4557-De-Silva-St-Fremont-CA-94538_rb/
     flag_readonly_name = fields.Boolean(string='Flag Readonly Name', default=False)
     #img_gmaps_st_view_128 = fields.Image("Image 128", compute='_compute_gmaps_stree_view_image_128')
+    
+    @api.depends('street', 'street2', 'city', 'state_id', 'zip')
+    def _get_url(self):
+        for rec in self:
+            url = 'https://zillow.com'
+            gmaps_url = 'https://google.com/maps'
+            address = []
+            if rec.street:
+                address.append(rec.street)
+            if rec.street2:
+                address.append(rec.street2)
+            if rec.city:
+                address.append(rec.city)
+            if rec.state_id and rec.state_id.code:
+                address.append(rec.state_id.code)
+            elif rec.state_id:
+                address.append(rec.state_id.name)
+            if rec.zip:
+                address.append(rec.zip)
+            if rec.country_id:
+                address.append(rec.country_id.name)
+            if address:
+                url += '/homes/%s_rb/' %('-'.join(address))
+                gmaps_url += '/search/%s' %('+'.join(address))
+            rec.zillow_url = url
+            rec.gmaps_url = gmaps_url
+    
+    def action_zillow_search(self):
+        self.ensure_one()
+        url = self.zillow_url
+        return {'name': 'Zillow Search %s' % self.name,
+                  'res_model': 'ir.actions.act_url',
+                  'type'     : 'ir.actions.act_url',
+                  'target'   : 'new',
+                  'url'      : url
+               }
+    
+    def action_gmaps_search(self):
+        self.ensure_one()
+        url = self.gmaps_url
+        return {'name': 'Google Maps Search %s' % self.name,
+                  'res_model': 'ir.actions.act_url',
+                  'type'     : 'ir.actions.act_url',
+                  'target'   : 'new',
+                  'url'      : url
+               }
     
 #     @api.onchange('street', 'zip', 'city', 'state_id', 'country_id')
 #     def onchange_partner_id_geo(self):
