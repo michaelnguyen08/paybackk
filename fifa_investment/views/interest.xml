@@ -1,0 +1,62 @@
+<odoo>
+  <data>
+  	<record model="ir.ui.view" id="res_interest_fifa_view_tree">
+	    <field name="name">res.interest.fifa.tree</field>
+	    <field name="model">res.interest.fifa</field>
+	    <field name="arch" type="xml">
+			<tree string="Interest Accrued">
+				<field name="date"/>
+				<field name="interest_amount"/>
+				<field name="next_interest_date"/>
+			</tree>
+	    </field>
+    </record>
+  	<record model="ir.ui.view" id="res_interest_view_tree">
+	    <field name="name">res.interest.tree</field>
+	    <field name="model">res.interest</field>
+	    <field name="arch" type="xml">
+			<tree string="Interest">
+				<field name="name"/>
+				<field name="rate"/>
+				<field name="type"/>
+				<field name="rule_type"/>
+				<field name="interval"/>
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="res_interest_view_form">
+	    <field name="name">res.interest.form</field>
+	    <field name="model">res.interest</field>
+	    <field name="arch" type="xml">
+			<form>
+				<sheet>
+                    <div class="oe_title">
+                    	<h1>
+                    		<field name="name" default_focus="1" required="1" placeholder="Name / Title"/>
+                    	</h1>
+                    	<h2>
+                    		<label for="rate" />
+                    		<field name="rate"/>
+                    	</h2>
+                    	<group>
+                    		<field name="type"/>
+							<field name="rule_type"/>
+							<field name="interval"/>
+                    	</group>
+                    </div>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+    
+    <record model="ir.actions.act_window" id="action_interest">
+      <field name="name">Interest</field>
+      <field name="res_model">res.interest</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+    
+    <menuitem id="menu_interest" name="Interest" parent="crm.crm_menu_config" sequence="100" action="action_interest" groups="group_fifa_manager"/>
+    
+  </data>
+</odoo>

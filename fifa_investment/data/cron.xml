@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<odoo noupdate="1">
+
+    <record id="cron_recurring_interests" model="ir.cron">
+        <field name="name">Apply FIFA Interests</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="numbercall">-1</field>
+        <field name="model_id" ref="model_res_interest"/>
+        <field name="code">model.compute_interest_on_purchased_fifa()</field>
+        <field name="state">code</field>
+    </record>
+
+</odoo>

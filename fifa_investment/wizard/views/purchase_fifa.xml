@@ -42,7 +42,7 @@
 	</record>
 
 	<record id="act_res_fifa_purchase_fund" model="ir.actions.act_window">
-		<field name="name">Order Credit Limit Request</field>
+		<field name="name">Purchase FIFA</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="res_model">res.fifa.purchase.fund</field>
 		<field name="view_mode">form</field>

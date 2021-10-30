@@ -14,3 +14,4 @@ class AccountMoveLine(models.Model):
     
     partner_fund_investment_id = fields.Many2one(comodel_name='res.fifa.investment.fund.partner.investments', string='Partner Fund Investment')
     fifa_id = fields.Many2one(comodel_name='res.fifa', string='FIFA')
+    

@@ -1,0 +1,79 @@
+<odoo>
+  <data>
+  	<record model="ir.ui.view" id="res_fifa_view_tree">
+	    <field name="name">res.fifa.tree</field>
+	    <field name="model">res.fifa</field>
+	    <field name="priority" eval="10"/>
+	    <field name="arch" type="xml">
+			<tree string="FIFA's" editable="bottom" decoration-success="status=='purchased'" decoration-danger="status=='sold'">
+				<field name="year"/>
+				<field name="fifa_type"/>
+				<field name="value"/>
+				<field name="status"/>
+				<field name="purchase_date" readonly="1"/>
+				<field name="interest_id" />
+				<field name="interest_start_date" string="Interest Applied From" />
+				<field name="interest"/>
+				<field name="next_interest_date" string="Next Interest Due" />
+				<!-- 
+				<button name="add_fifa_interest" string="Add Interest" class="btn-danger" type="object"/>
+				 -->
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="res_fifa_sale_view_tree">
+	    <field name="name">res.fifa.sale.tree</field>
+	    <field name="model">res.fifa</field>
+	    <field name="priority" eval="20"/>
+	    <field name="arch" type="xml">
+			<tree string="FIFA's" editable="bottom" decoration-success="status=='purchased'" decoration-danger="status=='sold'">
+				<field name="year" readonly="1"/>
+				<field name="fifa_type" readonly="1"/>
+				<field name="purchase_date" />
+				<field name="fund_id" />
+				<field name="value" readonly="1"/>
+				<field name="interest"/>
+				<field name="sale_price"/>
+				<field name="user_edited_sale_price" invisible="1"/>
+				<field name="status" invisible="1"/>
+				<!-- 
+				<button name="recompute_sale_price" icon="fa-reload" type="object" attrs="{'invisible': [('user_edited_sale_price', '=', False)]}"/>
+				 -->
+			</tree>
+	    </field>
+    </record>
+    
+    <record model="ir.ui.view" id="res_fifa_view_form">
+	    <field name="name">res.fifa.form</field>
+	    <field name="model">res.fifa</field>
+	    <field name="arch" type="xml">
+			<form>
+				<sheet>
+					<div class="oe_button_box" name="button_box">
+                        <button name="action_view_accrued_interest" type="object" class="oe_stat_button" icon="fa-dollar" context="{'default_fifa_id': id}">
+                            <div class="o_stat_info">
+                                <field name="interest" class="o_stat_value"/>
+                                <span class="o_stat_text"> Accrued Interest</span>
+                            </div>
+                        </button>
+                    </div>
+					<group>
+						<field name="id" invisible="1"/>
+						<field name="fifa_type"/>
+						<field name="year"/>
+						<!-- 
+						<field name="lead_id"/>
+						 -->
+						<field name="value"/>
+						<field name="interest_id"/>
+					</group>
+					<group string="Interest" attrs="{'invisible': [('interest_accrued', '=', False)]}">
+						<field name="interest_accrued" nolabel="1"/>
+					</group>
+				</sheet>
+			</form>
+	    </field>
+    </record>
+  </data>
+</odoo>
