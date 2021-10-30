@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<!-- style="width:70%;" -->
+	<record id="view_res_fifa_sale" model="ir.ui.view">
+		<field name="name">res.fifa.sale.form</field>
+		<field name="model">res.fifa.sale</field>
+		<field name="arch" type="xml">
+			<form string="Sale FIFA">
+			    <group name="credit_limit_request">
+			    	<group>
+			    		<field name="lead_id" readonly="1" invisible="1"/>
+			    		<field name="currency_id" readonly="1" invisible="1"/>
+			    		<field name="sale_date" required="1"/>
+			    	</group>
+				</group>
+				<notebook>
+	    			<page string="FIFA to Sale">
+	    				<field name="fifa_ids" required="1" nolabel="1" context="{'tree_view_ref' : 'fifa_investment.res_fifa_sale_view_tree'}"/>
+	    				<group name="note_group" col="6" class="mt-2 mt-md-0">
+						    <group class="oe_subtotal_footer oe_right" colspan="2" name="fifa_total">
+						        <div class="oe_inline o_td_label">
+						            <label for="fifa_sale_price"/>
+						        </div>
+						        <field name="fifa_sale_price" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+						    </group>
+						    <div class="oe_clear"/>
+						</group>
+	    			</page>
+	    		</notebook>
+				<footer>
+					<button string="Sell FIFA" class="btn-danger" type="object" name="action_sale_fifa" attrs="{'readonly': [('fifa_ids', '=', False)]}"/>
+					<button string="Cancel" class="oe_highlight" special="cancel"/>
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="act_res_fifa_sale" model="ir.actions.act_window">
+		<field name="name">Sell FIFA</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">res.fifa.sale</field>
+		<field name="view_mode">form</field>
+		<field name="context">{}</field>
+		<field name="target">new</field>
+	</record>
+	
+</odoo>

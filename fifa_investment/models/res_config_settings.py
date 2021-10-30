@@ -24,15 +24,25 @@ class ResConfigSettings(models.TransientModel):
         #domain="['|', ('company_id', '=', False), ('company_id', '=', allowed_company_ids[0])]",
         help="Investment Default Journal")
     
-    
+    #-------- FIFA Purchase
     res_fifa_default_purchase_debit_account = fields.Many2one('account.account', string="Purchase FIFA Default Debit Account", check_company=True,
-        related="company_id.res_fifa_default_purchase_debit_account", readonly=False, help="Investment Default Debit Account")
+        related="company_id.res_fifa_default_purchase_debit_account", readonly=False, help="Default Debit Account for purchase of FIFA's")
     
     res_fifa_default_purchase_credit_account = fields.Many2one('account.account', string="Purchase FIFA Default Credit Account", check_company=True,
-        related="company_id.res_fifa_default_purchase_credit_account", readonly=False, help="Investment Default Credit Account")
+        related="company_id.res_fifa_default_purchase_credit_account", readonly=False, help="Default Credit Account for purchase of FIFA's")
     
     res_fifa_default_purchase_journal = fields.Many2one('account.journal', string="Purchase FIFA Default Journal", check_company=True,
-        related="company_id.res_fifa_default_purchase_journal", readonly=False, help="Investment Default Journal")
+        related="company_id.res_fifa_default_purchase_journal", readonly=False, help="Default Journal for purchase of FIFA's")
+    
+    #-------- FIFA Sale
+    res_fifa_default_sale_debit_account = fields.Many2one('account.account', string="Sale FIFA Default Debit Account", check_company=True,
+        related="company_id.res_fifa_default_sale_debit_account", readonly=False, help="Default Debit Account for sale of FIFA's")
+    
+    res_fifa_default_sale_credit_account = fields.Many2one('account.account', string="Sale FIFA Default Credit Account", check_company=True,
+        related="company_id.res_fifa_default_sale_credit_account", readonly=False, help="Default Credit Account for sale of FIFA's")
+    
+    res_fifa_default_sale_journal = fields.Many2one('account.journal', string="Sale FIFA Default Journal", check_company=True,
+        related="company_id.res_fifa_default_sale_journal", readonly=False, help="Default Journal for sale of FIFA's")
     
     
     

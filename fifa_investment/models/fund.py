@@ -140,6 +140,30 @@ class InvestmentFundPurchasedFiFA(models.Model):
                 self.env['res.fifa.investment.fund.partner.share'].create({'partner_investment_id': investment.id, 'fifa_id': fifa_id})
         return result
     
+class InvestmentFundSoldFiFA(models.Model):
+    _name = 'res.fifa.investment.fund.sold'
+    _description = 'FIFA sold with investment fund'
+    
+    fund_id = fields.Many2one(comodel_name='res.fifa.investment.fund', string='Fund', required=True, ondelete='restrict')
+    fifa_id = fields.Many2one(comodel_name='res.fifa', required=True, ondelete='restrict')
+    sale_date = fields.Date(string='Sale Date', required=True)
+    
+    @api.constrains('fifa_id')
+    def _fifa_purchase_constraint(self):
+        sold_fifa = self.search([('fifa_id', '=', self.fifa_id.id)])
+        if sold_fifa and len(sold_fifa) >1:
+            raise UserError('FIFA Already Sold')
+    
+    @api.model
+    def create(self, values):
+        result = super().create(values)
+        fifa_id = result.mapped('fifa_id')[0].id
+        fund_ids = result.mapped('fund_id')
+        for fund in fund_ids:
+            for investment in fund.partner_investments:
+                self.env['res.fifa.investment.fund.partner.share'].create({'partner_investment_id': investment.id, 'fifa_id': fifa_id})
+        return result
+    
 class InvestmentFunds(models.Model):
     _name = 'res.fifa.investment.fund'
     _description = 'Partner Investment Funds'
@@ -164,6 +188,10 @@ class InvestmentFunds(models.Model):
     purchased_fifa_count = fields.Integer(string='Purchased FIFA Count', compute='_get_fund_amounts')
     purchased_fifa_count_str = fields.Char(string='Purchased FIFA Count Text', compute='_get_fund_amounts')
     remaining_amount = fields.Monetary(string='Remaining Amount', currency_field='currency_id', compute='_get_fund_amounts', store=True)
+    sold_fifa = fields.One2many(comodel_name='res.fifa.investment.fund.sold', inverse_name='fund_id', string='Sold FIFA')
+    sold_fifa_value = fields.Monetary(string='Sold FIFA Value', currency_field='currency_id', compute='_get_fund_amounts')
+    sold_fifa_count = fields.Integer(string='Sold FIFA Count', compute='_get_fund_amounts')
+    sold_fifa_count_str = fields.Char(string='Sold FIFA Count Text', compute='_get_fund_amounts')
     
     @api.depends('purchased_fifa.fifa_id', 'total_amount')
     def _get_fund_amounts(self):

@@ -27,3 +27,11 @@ access_manager_res_fifa_purchase_fund,access.manager.res.fifa.purchase.fund,mode
 access_all_res_fifa_purchase_fund,access.all.res.fifa.purchase.fund,model_res_fifa_purchase_fund,,1,1,1,1
 access_manager_res_fifa_investment_fund_purchased,access.manager.res.fifa.investment.fund.purchased,model_res_fifa_investment_fund_purchased,group_fifa_manager,1,1,1,1
 access_all_res_fifa_investment_fund_purchased,access.all.res.fifa.investment.fund.purchased,model_res_fifa_investment_fund_purchased,,1,0,1,0
+access_manager_res_interest,access.manager.res.interest,model_res_interest,group_fifa_manager,1,1,1,1
+access_all_res_interest,access.all.res.interest,model_res_interest,,1,0,1,0
+access_manager_res_interest_fifa,access.manager.res.interest_fifa,model_res_interest_fifa,group_fifa_manager,1,1,1,1
+access_all_res_interest_fifa,access.all.res.interest_fifa,model_res_interest_fifa,,1,0,1,0
+access_manager_res_fifa_investment_fund_sold,access.manager.res.fifa.investment.fund.sold,model_res_fifa_investment_fund_sold,group_fifa_manager,1,1,1,1
+access_all_res_fifa_investment_fund_sold,access.all.res.fifa.investment.fund.sold,model_res_fifa_investment_fund_sold,,1,0,1,0
+access_manager_res_fifa_sale,access.manager.res.fifa.sale,model_res_fifa_sale,group_fifa_manager,1,1,1,1
+access_all_res_fifa_sale,access.all.res.fifa.sale,model_res_fifa_sale,,1,1,1,1

@@ -91,6 +91,18 @@ class Lead(models.Model):
                 'target': 'new',
                 'context': {'default_lead_id': self.id, 'default_fund_id': self.fund_id.id if self.fund_id else False}
             }
+        
+    def action_sell_fifa(self):
+        self.ensure_one()
+        return {
+                'name': 'Sell FIFA',
+                'type': 'ir.actions.act_window',
+                'res_model': 'res.fifa.sale',
+                'view_mode': 'form',
+                'view_type': 'form',
+                'target': 'new',
+                'context': {'default_lead_id': self.id}
+            }
 
     @api.constrains('name')
     def _unique_name_constraint(self):

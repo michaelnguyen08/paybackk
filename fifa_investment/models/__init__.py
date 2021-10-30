@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
 
 from . import partner, fund, fifa, leads, res_config_settings, company
-from . import account
+from . import account, interest
